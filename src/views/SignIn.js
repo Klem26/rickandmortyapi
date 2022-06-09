@@ -1,6 +1,11 @@
 import * as React from "react";
 import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
+import { auth, provider } from "../firebase-config";
+import { signInWithPopup } from "firebase/auth";
+
 import { validationSchema } from "../schemas/yupValidation";
+
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,14 +19,25 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
+import IconButton from "@mui/material/IconButton";
+import FacebookIcon from "@mui/icons-material/Facebook";
 
-function SignIn() {
+function SignIn({ setIsAuth }) {
   let navigate = useNavigate();
+
+  const singInWithFacebook = () => {
+    signInWithPopup(auth, provider).then(() => {
+      localStorage.setItem(" isAuth", true);
+      setIsAuth(true);
+      navigate("/characters");
+    });
+  };
 
   const onSubmit = async (values, actions) => {
     await new Promise((resolve) => {
       setTimeout(resolve, 1000);
+      localStorage.setItem(" isAuth", true);
+      setIsAuth(true);
     });
     actions.resetForm();
     navigate("/characters");
@@ -139,14 +155,29 @@ function SignIn() {
                 >
                   Sign In
                 </Button>
+                <Button onClick={singInWithFacebook}>
+                  <IconButton
+                    color="primary"
+                    aria-label="facebook icon"
+                    component="span"
+                  >
+                    <FacebookIcon fontSize="large" />
+                  </IconButton>
+                </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" variant="body2">
+                    <Link
+                      href="https://support.google.com/accounts/answer/41078?hl=en&co=GENIE.Platform%3DDesktop"
+                      variant="body2"
+                    >
                       Forgot password?
                     </Link>
                   </Grid>
                   <Grid item>
-                    <Link href="#" variant="body2">
+                    <Link
+                      href="https://www.google.com/account/about"
+                      variant="body2"
+                    >
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
